@@ -10,7 +10,6 @@ public class MainActivity extends AppCompatActivity {
 
     public Message[] messages ={new Message("hi").setMine(false),new Message("how are u?").setMine(true)};
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
