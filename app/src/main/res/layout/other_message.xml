@@ -23,13 +23,13 @@
         android:layout_alignTop="@+id/avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/message_body"
+        android:layout_above="@+id/send_message_body"
         android:text="Rose"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/message_body"
+        android:id="@+id/send_message_body"
         android:layout_below="@+id/avatar"
         android:layout_alignLeft="@+id/sendersName"
         android:background="@drawable/other_message"

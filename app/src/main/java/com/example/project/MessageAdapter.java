@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,18 +26,22 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         final Message message = getItem(position);
         if(message.isMine()) {
-            if (convertView == null) {
+            //if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.my_message, null);
-            }
+
+            //}
+            ((TextView) convertView.findViewById(R.id.my_message_body)).setText(message.getMessage());
         }
         else
         {
-            if (convertView == null) {
+            //if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.other_message, null);
-            }
+            //}
             ((TextView)convertView.findViewById(R.id.sendersName)).setText("Mary");
+            Log.d("MessageAdapter", "Message from other person:"+message.getMessage());
+
         }
-            ((TextView) convertView.findViewById(R.id.message_body)).setText(message.getMessage());
+
 
 
         return convertView;

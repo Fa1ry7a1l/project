@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         messages.add(new Message("hi").setMine(false));
         messages.add(new Message("how are u?").setMine(true));
 
-    MessageAdapter messageAdapter=new MessageAdapter(this, messages);
-   ListView listView=(ListView) findViewById(R.id.messages_view);
-    listView.setAdapter(messageAdapter);
+    final MessageAdapter messageAdapter=new MessageAdapter(this, messages);
+   final ListView listView=(ListView) findViewById(R.id.messages_view);
+     listView.setAdapter(messageAdapter);
 
         final ImageButton sendButton=(ImageButton) findViewById(R.id.sendButton);
         final EditText myMessageField=(EditText)findViewById(R.id.sendMessage);
@@ -37,12 +37,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!myMessageField.getText().toString().isEmpty())
                 {
-                    messages.add(new Message(myMessageField.getText().toString()).setMine(true));
+                    Message msg= new Message(myMessageField.getText().toString());
+                    msg.setMine(true);
+                    messages.add(msg);
                     myMessageField.setText("");
 
-                    MessageAdapter messageAdapter=new MessageAdapter(getApplicationContext(), messages);
-                    ListView listView=(ListView) findViewById(R.id.messages_view);
-                    listView.setAdapter(messageAdapter);
+                    //MessageAdapter messageAdapter=new MessageAdapter(getApplicationContext(), messages);
+                    messageAdapter.notifyDataSetChanged();
+                    //listView.setAdapter(messageAdapter);
+                    listView.smoothScrollToPosition(messages.size()-1);
                 }
             }
         });

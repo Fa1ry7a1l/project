@@ -6,7 +6,7 @@ import java.util.Date;
 public class Message {
     private Date date;
     private String message;
-    private boolean isMine=false;
+    private boolean isMine;
 
     public Message()
 
@@ -15,20 +15,20 @@ public class Message {
      date=new Date();
      isMine=false;
     }
-    public Message(String a)
+    Message(String a)
     {
         message=a;
         date=new Date();
         isMine=false;
     }
-    public Message(String a, Date d)
+     Message(String a, Date d)
     {
         message=a;
         date=d;
         isMine=false;
     }
 
-    public Message(String a,Date d, boolean is)
+     Message(String a,Date d, boolean is)
     {
         message=a;
         date=d;
@@ -36,12 +36,20 @@ public class Message {
     }
 
     //getters
-    public Date getDate(){return date;}
-    public String getMessage(){return message;}
+     Date getDate(){return date;}
+     String getMessage(){return message;}
     //setters
-    public void setDate(Date d){date=d;}
-    public void setMessage(String m){message=m;}
-    public Message setMine(boolean isMine){this.isMine=isMine; return this;}
+     void setDate(Date d){date=d;}
+     void setMessage(String m)
+    {
+        message=m;
+    }
+
+    public Message setMine(boolean isMine)
+    {
+        this.isMine=isMine;
+     return this;
+    }
 
 
     public boolean isMine()
@@ -49,7 +57,8 @@ public class Message {
         return isMine;
     }
 
-    public String toString(){
+    public String toString()//date message
+    {
         return date.toString()+" "+message;
     }
 
