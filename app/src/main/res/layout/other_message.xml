@@ -8,10 +8,19 @@
     android:clipToPadding="false">
 
 
-
+    <View
+    android:id="@+id/avatar"
+    android:layout_alignParentLeft="true"
+    android:scaleType="centerInside"
+    android:background="@drawable/circle"
+    android:layout_width="34dp"
+    android:layout_height="34dp"
+    />
     <TextView
         android:id="@+id/sendersName"
         android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/avatar"
+        android:layout_alignTop="@+id/avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/message_body"
@@ -21,8 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/message_body"
-        android:layout_below="@+id/name"
-        android:layout_alignLeft="@+id/name"
+        android:layout_below="@+id/avatar"
+        android:layout_alignLeft="@+id/sendersName"
         android:background="@drawable/other_message"
         android:paddingVertical="12dp"
         android:paddingHorizontal="16dp"
