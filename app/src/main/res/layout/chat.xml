@@ -8,7 +8,7 @@
     android:clipToPadding="false"
     android:focusableInTouchMode="true"
     >
-    <ListView
+    <com.google.android.material.textview.MaterialAutoCompleteTextView
         android:layout_width="match_parent"
         android:id="@+id/messages_view"
         android:layout_weight="2"
@@ -23,7 +23,7 @@
         tools:ignore="MissingConstraints">
 
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
