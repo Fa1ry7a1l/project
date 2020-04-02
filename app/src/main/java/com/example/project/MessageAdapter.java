@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 public class MessageAdapter extends ArrayAdapter<Message> {
     public MessageAdapter(Context context, Message[] arr) {
-        super(context, R.layout.dialogue_adapter, arr);
+        super(context, R.layout.my_message, arr);
     }
 
     @Override
@@ -23,16 +23,16 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.my_message, null);
             }
-            ((TextView) convertView.findViewById(R.id.my_message_body)).setText(message.getMessage());
         }
         else
         {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.other_message, null);
             }
-            ((TextView) convertView.findViewById(R.id.other_message_body)).setText(message.getMessage());
-           // ((TextView) convertView.findViewById(R.id.sendersName)).setText(message.get);
+            ((TextView)convertView.findViewById(R.id.sendersName)).setText("Mary");
         }
+            ((TextView) convertView.findViewById(R.id.message_body)).setText(message.getMessage());
+
 
         return convertView;
     }

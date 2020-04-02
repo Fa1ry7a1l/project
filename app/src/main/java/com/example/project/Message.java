@@ -41,7 +41,7 @@ public class Message {
     //setters
     public void setDate(Date d){date=d;}
     public void setMessage(String m){message=m;}
-    public void setMine(boolean isMine){this.isMine=isMine;}
+    public Message setMine(boolean isMine){this.isMine=isMine; return this;}
 
 
     public boolean isMine()

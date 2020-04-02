@@ -16,7 +16,7 @@
         tools:layout_editor_absoluteY="0dp"
         tools:ignore="MissingConstraints">
 
-        <com.google.android.material.textview.MaterialAutoCompleteTextView
+        <ListView
         android:layout_width="match_parent"
         android:id="@+id/messages_view"
         android:divider="#fff"
