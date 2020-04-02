@@ -10,7 +10,7 @@
 
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/sendersName"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/message_body"
+        android:id="@+id/other_message_body"
         android:layout_below="@+id/name"
         android:layout_alignLeft="@+id/name"
         android:background="@drawable/other_message"
