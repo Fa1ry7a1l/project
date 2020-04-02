@@ -8,11 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 
 
 public class MessageAdapter extends ArrayAdapter<Message> {
     public MessageAdapter(Context context, Message[] arr) {
         super(context, R.layout.my_message, arr);
+    }
+    public MessageAdapter(Context context, ArrayList<Message> messages)
+    {
+        super(context, R.layout.my_message, messages);
     }
 
     @Override
