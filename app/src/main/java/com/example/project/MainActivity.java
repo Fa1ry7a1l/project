@@ -15,8 +15,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-   // public Message[] messages ={new Message("hi").setMine(false),new Message("how are u?").setMine(true)};
-    ArrayList<Message> messages = new ArrayList<Message>();
+    ArrayList<Message> messages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +26,11 @@ public class MainActivity extends AppCompatActivity {
         messages.add(new Message("how are u?").setMine(true));
 
     final MessageAdapter messageAdapter=new MessageAdapter(this, messages);
-   final ListView listView=(ListView) findViewById(R.id.messages_view);
+   final ListView listView= findViewById(R.id.messages_view);
      listView.setAdapter(messageAdapter);
 
-        final ImageButton sendButton=(ImageButton) findViewById(R.id.sendButton);
-        final EditText myMessageField=(EditText)findViewById(R.id.sendMessage);
+        final ImageButton sendButton= findViewById(R.id.sendButton);
+        final EditText myMessageField= findViewById(R.id.sendMessage);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     messages.add(msg);
                     myMessageField.setText("");
 
-                    //MessageAdapter messageAdapter=new MessageAdapter(getApplicationContext(), messages);
                     messageAdapter.notifyDataSetChanged();
-                    //listView.setAdapter(messageAdapter);
                     listView.smoothScrollToPosition(messages.size()-1);
                 }
             }
