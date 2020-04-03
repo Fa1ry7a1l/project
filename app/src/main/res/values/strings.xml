@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">project</string>
 
-    <string name="input_placeholder">Write a message</string>
+    <string name="input_in_chat">Write a message</string>
+    <string name="send_button_description">Send button</string>
+    <string name="default_opponent_name">Rose</string>
+    <string name="default_message_in_chat">How are you doing? This is a long message that should probably wrap.</string>
+
 </resources>

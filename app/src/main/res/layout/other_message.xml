@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingVertical="10dp"
-    android:paddingLeft="15dp"
-    android:paddingRight="60dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="60dp"
     android:clipToPadding="false">
 
 
     <View
     android:id="@+id/avatar"
-    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
     android:scaleType="centerInside"
     android:background="@drawable/circle"
     android:layout_width="34dp"
@@ -18,25 +18,25 @@
     />
     <TextView
         android:id="@+id/sendersName"
-        android:layout_marginLeft="15dp"
-        android:layout_toRightOf="@+id/avatar"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/avatar"
         android:layout_alignTop="@+id/avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/send_message_body"
-        android:text="Rose"/>
+        android:layout_above="@+id/other_message_body"
+        android:text="@string/default_opponent_name"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/send_message_body"
+        android:id="@+id/other_message_body"
         android:layout_below="@+id/avatar"
-        android:layout_alignLeft="@+id/sendersName"
+        android:layout_alignStart="@+id/sendersName"
         android:background="@drawable/other_message"
         android:paddingVertical="12dp"
         android:paddingHorizontal="16dp"
         android:elevation="2dp"
-        android:textSize="18dp"
-        android:text="How are you doing? This is a long message that should probably wrap."
+        android:textSize="18sp"
+        android:text="@string/default_message_in_chat"
         />
 </RelativeLayout>
