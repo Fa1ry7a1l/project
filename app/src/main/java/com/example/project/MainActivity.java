@@ -25,30 +25,27 @@ public class MainActivity extends AppCompatActivity {
         messages.add(new Message("hi").setMine(false));
         messages.add(new Message("how are u?").setMine(true));
 
-    final MessageAdapter messageAdapter=new MessageAdapter(this, messages);
-   final ListView listView= findViewById(R.id.messages_view);
-     listView.setAdapter(messageAdapter);
+        final MessageAdapter messageAdapter = new MessageAdapter(this, messages);
+        final ListView listView = findViewById(R.id.messages_view);
+        listView.setAdapter(messageAdapter);
 
-        final ImageButton sendButton= findViewById(R.id.sendButton);
-        final EditText myMessageField= findViewById(R.id.sendMessage);
+        final ImageButton sendButton = findViewById(R.id.sendButton);
+        final EditText myMessageField = findViewById(R.id.sendMessage);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!myMessageField.getText().toString().isEmpty())
-                {
-                    Message msg= new Message(myMessageField.getText().toString());
+                if (!myMessageField.getText().toString().isEmpty()) {
+                    Message msg = new Message(myMessageField.getText().toString());
                     msg.setMine(true);
                     messages.add(msg);
                     myMessageField.setText("");
 
                     messageAdapter.notifyDataSetChanged();
-                    listView.smoothScrollToPosition(messages.size()-1);
+                    listView.smoothScrollToPosition(messages.size() - 1);
                 }
             }
         });
     }
-
-
 
 
 }
