@@ -30,6 +30,12 @@ public class Message {
         date = d;
         mine = is;
     }
+    Message(Message a)
+    {
+        message=String.copyValueOf(a.getMessage().toCharArray());
+        date=a.date;
+        mine=a.isMine();
+    }
 
     // getters
     public Date getDate() {
