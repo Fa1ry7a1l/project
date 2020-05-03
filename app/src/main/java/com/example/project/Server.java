@@ -2,35 +2,92 @@ package com.example.project;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
-    private final String serverTag="Server";
-    public void startServer()
-    {
-        int port = 9999;
-        try{
-            ServerSocket serverSocket=new ServerSocket(port);
-            Log.d(serverTag,"Waiting for connection---");
-
-            Socket socket = serverSocket.accept();
-            Log.d(serverTag," Client connected");
-
-            InputStream sin=socket.getInputStream();
-            OutputStream sout=socket.getOutputStream();
-
-            DataInputStream inputStream=new DataInputStream(sin);
-            DataOutputStream outputStream=new DataOutputStream(sout);
+public class Server implements Runnable {
 
 
-        }catch (Exception e){
-            Log.e(serverTag,e.getMessage()+" server exception");}
+    private static String TAG = "Server";
+    private String entry;
+    private Message msg;
+
+    private void startServer() throws IOException {
+        //creating socket
+        ServerSocket serverSocket = new ServerSocket(3345);
+        entry = "";
+        // waiting for client
+        try {
+            while (true) {
+
+                // client connected
+                Log.d(TAG, "Waiting for client");
+                Socket client = serverSocket.accept();
+                //creating socket
+                Log.d(TAG, "Got client");
+
+                // creating output stream
+                DataOutputStream out = new DataOutputStream(client.getOutputStream());
+                Log.d(TAG, "Output stream created");
+                // creating input stream
+                DataInputStream in = new DataInputStream(client.getInputStream());
+                Log.d(TAG, "Input stream created");
+
+                if (!client.isClosed()) {
+
+                    Log.d(TAG, "Reading ");
+                    entry = in.readUTF();
+                    Gson gson = new Gson();
+                    msg = gson.fromJson(entry, Message.class);
+                    msg.setMine(false);
+
+
+                    //MainActivity.serverMessage.setText(entry);
+                    MainActivity.listView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.getMessages().add(msg);
+                            MainActivity.updateAdapter();
+                        }
+                    });
+
+                    Log.d(TAG, "Message: " + entry);
+
+                    Log.d(TAG, "Sent message to client");
+
+                    out.flush();
+
+
+                }
+                //closing streams
+                Log.d(TAG, "Client disconnected");
+                Log.d(TAG, "Closing connections");
+                in.close();
+                out.close();
+                //closing socket
+                Log.d(TAG, "Closing socket");
+                client.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
+    @Override
+    public void run() {
+        try {
 
+            Log.d(TAG, "Server started from run");
+            this.startServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

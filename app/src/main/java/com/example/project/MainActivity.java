@@ -21,13 +21,22 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Message> messages = new ArrayList<>();
-    public Message answerHTTP=new Message();
+
+    String ip = "";
+    private static ArrayList<Message> messages = new ArrayList<>();
+    public Message answerHTTP = new Message();
+    boolean isServerStarted = false;
+    Message message;
+    static MessageAdapter messageAdapter;
+    public static ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,73 +46,86 @@ public class MainActivity extends AppCompatActivity {
         messages.add(new Message("hi").setMine(false));
         messages.add(new Message("how are u?").setMine(true));
 
-        final MessageAdapter messageAdapter = new MessageAdapter(this, messages);
-        final ListView listView = findViewById(R.id.messages_view);
+        messageAdapter = new MessageAdapter(this, messages);
+        listView = findViewById(R.id.messages_view);
         listView.setAdapter(messageAdapter);
 
         final ImageButton sendButton = findViewById(R.id.sendButton);
         final EditText myMessageField = findViewById(R.id.sendMessage);
+        final EditText ipText = findViewById(R.id.ip);
+        ServerAsyncTask.execute();
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.d("MainActivity", "Button pressed");
                 if (!myMessageField.getText().toString().isEmpty()) {
+                    Log.d("MainActivity", "Sending message");
                     Message msg = new Message(myMessageField.getText().toString());
                     msg.setMine(true);
+                    message = Message.copy(msg);
+                    // message.setMine(false);
                     messages.add(msg);
+
+                    ip = ipText.getText().toString();
+                    if (ip.equals("")) {
+                        ip = "localhost";
+                    }
+                    Log.d("MainActivity", "Trying to start client");
+                    new ClientAsyncTask().execute();
+
+
                     myMessageField.setText("");
 
                     messageAdapter.notifyDataSetChanged();
                     listView.smoothScrollToPosition(messages.size() - 1);
 
 
-                    new MessageSender().execute();
-                    while(answerHTTP.getMessage().equals(""))
-                    {
-                        Log.d("Going round", "do not do this");
-                    }
-                    messages.add(new Message(answerHTTP));
-
-                    messageAdapter.notifyDataSetChanged();
-                    answerHTTP.setMessage("");
-                    listView.smoothScrollToPosition(messages.size() - 1);
                 }
+
             }
         });
+
+
+    }
+
+    public static ArrayList<Message> getMessages() {
+        return messages;
+    }
+
+    public static void updateAdapter() {
+        messageAdapter.notifyDataSetChanged();
+        listView.smoothScrollToPosition(messages.size() - 1);
     }
 
 
-     class MessageSender extends AsyncTask<Message,Message,Message> {
+    static class ServerAsyncTask {
 
+        static ExecutorService executorIt = Executors.newFixedThreadPool(1);
+
+        static void execute() {
+            try {
+                Log.d("MainActivity", "Starting server");
+                Server server = new Server();
+                executorIt.execute(server);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    class ClientAsyncTask extends AsyncTask {
 
         @Override
-        protected Message doInBackground(Message... messages) {
-            // Создаем HttpClient и Post Header
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://192.168.0.8:8080");
-
-            try{
-                //httpPost.setEntity(new UrlEncodedFormEntity(new Message("hello"),"UTF-8"));
-                HttpResponse response = httpClient.execute(httpPost);
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    HttpEntity entity = response.getEntity();
-                    Gson gson = new Gson();
-                    answerHTTP = gson.fromJson(EntityUtils.toString(entity),Message.class);
-                    answerHTTP.setMine(false);
-
-                    Log.d("Server","Message is: "+answerHTTP.getMessage());
-                }
-            }catch(Exception e)
-            {
-                Log.d("Server","error in server");
-            }
+        protected Object doInBackground(Object[] objects) {
+            Log.d("Client start", "Starting client stream");
+            Client.startClient(ip, message);
+            Log.d("Client start", "Stream started successfully");
 
             return null;
         }
-        @Override
-        protected void onPostExecute(Message result) {
-            super.onPostExecute(result);
-        }
-
 
 
     }

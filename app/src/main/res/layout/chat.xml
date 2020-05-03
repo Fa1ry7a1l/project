@@ -6,9 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="bottom"
     android:clipToPadding="false"
     android:focusableInTouchMode="true"
     >
+
+    <EditText
+        android:id="@+id/ip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ip"
+        android:inputType="text"
+        tools:ignore="MissingConstraints" />
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
