@@ -1,29 +1,15 @@
 package com.example.project;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.appcompat.app.AppCompatActivity;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -53,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton sendButton = findViewById(R.id.sendButton);
         final EditText myMessageField = findViewById(R.id.sendMessage);
         final EditText ipText = findViewById(R.id.ip);
-        ServerAsyncTask.execute();
+        ServerStarter.execute();
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         ip = "localhost";
                     }
                     Log.d("MainActivity", "Trying to start client");
-                    new ClientAsyncTask().execute();
+                    ClientStarter.execute(ip,message);
 
 
                     myMessageField.setText("");
@@ -94,37 +80,33 @@ public class MainActivity extends AppCompatActivity {
         return messages;
     }
 
-    public static void updateAdapter() {
+    public static void updateAdapter() throws InterruptedException {
         messageAdapter.notifyDataSetChanged();
+        Thread.sleep(10);
         listView.smoothScrollToPosition(messages.size() - 1);
     }
 
 
-    static class ServerAsyncTask {
+    static class ServerStarter {
 
-        static ExecutorService executorIt = Executors.newFixedThreadPool(1);
+        static ExecutorService executorServer = Executors.newFixedThreadPool(1);
 
         static void execute() {
-            try {
                 Log.d("MainActivity", "Starting server");
                 Server server = new Server();
-                executorIt.execute(server);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            executorServer.execute(server);
+
 
         }
     }
 
-    class ClientAsyncTask extends AsyncTask {
+    static class ClientStarter {
+        static ExecutorService executorClient = Executors.newFixedThreadPool(1);
 
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            Log.d("Client start", "Starting client stream");
-            Client.startClient(ip, message);
-            Log.d("Client start", "Stream started successfully");
-
-            return null;
+        static void execute(String ip, Message message) {
+            Log.d("MainActivity", "Starting client");
+            Client client = new Client(ip, message);
+            executorClient.execute(client);
         }
 
 

@@ -8,10 +8,21 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-public class Client {
+public class Client implements Runnable {
     private static String TAG = "Client";
+    private Message message;
+    private String ip;
 
-    public static void startClient(String ip, Message message) {
+    public Client() throws Exception {
+        throw new Exception("Do not use this method, client can1t work without ip and message");
+    }
+
+    public Client(String ip, Message message) {
+        this.message = message;
+        this.ip = ip;
+    }
+
+    private static void startClient(String ip, Message message) {
         Log.d(TAG, "StartClient run");
 
         try {
@@ -38,7 +49,7 @@ public class Client {
                 Log.d(TAG, "Client sent: " + clientMessage);
                 Log.d(TAG, "Client kill connections");
                 //waiting for answer
-               /* try {
+                try {
                     Thread.sleep(2000);
                     //do not exactly understand if it can generate exception but it is already in try{}
                     String input = in.readUTF();
@@ -50,7 +61,7 @@ public class Client {
                 }catch (Exception e)
                 {
                     Log.d(TAG,e.getMessage());
-                }*/
+                }
 
             }
             Log.d(TAG, "Closing connections & channels on client Side - DONE.");
@@ -64,5 +75,10 @@ public class Client {
             //Log.d(TAG, e.getMessage());
         }
 
+    }
+
+    @Override
+    public void run() {
+        startClient(ip,message);
     }
 }

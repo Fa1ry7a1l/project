@@ -52,14 +52,18 @@ public class Server implements Runnable {
                         @Override
                         public void run() {
                             MainActivity.getMessages().add(msg);
-                            MainActivity.updateAdapter();
+                            try {
+                                MainActivity.updateAdapter();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
                     Log.d(TAG, "Message: " + entry);
 
                     Log.d(TAG, "Sent message to client");
-
+                    out.writeUTF(entry);
                     out.flush();
 
 
