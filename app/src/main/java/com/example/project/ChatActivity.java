@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,8 @@ public class ChatActivity extends AppCompatActivity {
 
         final ImageButton sendButton = findViewById(R.id.sendButton);
         final EditText myMessageField = findViewById(R.id.sendMessage);
+        final ImageButton backButton = findViewById(R.id.arrowBackButton);
+        listView.smoothScrollToPosition(messages.size() - 1);
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +73,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
 
     }
+
+
 
     public static ArrayList<Message> getMessages() {
         return messages;
@@ -97,6 +109,22 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        save();
+        super.onStop();
+    }
 
+
+    void save()
+    {
+        SharedPreferences sharedPreferences;
+        sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
+        SharedPreferences.Editor editor= sharedPreferences.edit();
+        SaveLoader saveLoader= new SaveLoader(MainActivity.dialogues);
+        editor.putString(TAG,saveLoader.toString());
+        editor.apply();
+        Log.d(MainActivity.SAVE_TAG,"Everything saved");
+    }
 }
 

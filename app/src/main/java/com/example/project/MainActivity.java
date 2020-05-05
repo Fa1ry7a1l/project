@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
+    public static String SAVE_TAG="MainActivity";
 
     public static Dialogue dialogue;
     private static DialogueAdapter dialogueAdapter;
@@ -28,7 +30,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.dialogues);
         ServerStarter.execute();
 
-        dialogues= makeDialogues();
+        dialogues=/* makeDialogues();*/ load().getDialogues();
+        if(dialogues.size() == 0)
+        {
+            dialogues=makeDialogues();
+        }
         dialogueAdapter = new DialogueAdapter(this, dialogues);
         dialogueListView = findViewById(R.id.dialoguesList);
         dialogueListView.setAdapter(dialogueAdapter);
@@ -50,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        save();
+        super.onStop();
+    }
+
+
+
     public static void updateAdapter()
     {
         MainActivity.dialogueAdapter.notifyDataSetChanged();
@@ -61,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         dialogues.add(new Dialogue());
         dialogues.get(0).setName("Mary");
         dialogues.get(0).setMessages(new ArrayList<Message>());
-        dialogues.get(0).getMessages().add(new Message("hi"));
+        //dialogues.get(0).getMessages().add(new Message("hi"));
 
         return dialogues;
     }
@@ -79,6 +93,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void save()
+    {
+        SharedPreferences sharedPreferences;
+        sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
+        SharedPreferences.Editor editor= sharedPreferences.edit();
+        SaveLoader saveLoader= new SaveLoader(MainActivity.dialogues);
+        editor.putString(TAG,saveLoader.toString());
+        editor.apply();
+        Log.d(MainActivity.SAVE_TAG,"Everything saved");
+    }
+    SaveLoader load()
+    {
+        SharedPreferences sharedPreferences= getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
+        String loadedText = sharedPreferences.getString(MainActivity.SAVE_TAG,"");
+
+        Log.d(TAG,"Everything loaded");
+        if(loadedText.length()<5)
+        {
+            return new SaveLoader();
+        }
+        return SaveLoader.fromString(loadedText);
+
+
+    }
 
 }
 

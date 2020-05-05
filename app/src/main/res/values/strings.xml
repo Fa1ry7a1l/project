@@ -9,5 +9,6 @@
     <string name="default_icon_image">icon</string>
     <string name="default_message">hi how r u?</string>
     <string name="settings_button">settings_button</string>
+    <string name="arrow_back">arrow back</string>
 
 </resources>

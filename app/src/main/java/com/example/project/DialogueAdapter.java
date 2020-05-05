@@ -36,11 +36,20 @@ public class DialogueAdapter extends ArrayAdapter<Dialogue> {
         //puts name of dialogue holder into adapter
         ((TextView) convertView.findViewById(R.id.name)).setText(dialogue.getName());
         //puts text from last message in dialogue into adapter
-        ((TextView) convertView.findViewById(R.id.lastMessage)).setText(dialogue.getMessages().get(dialogue.getMessages().size() - 1).getMessage());
+        if(dialogue.getMessages().size() > 0) {
+            ((TextView) convertView.findViewById(R.id.lastMessage)).setText(dialogue.getMessages().get(dialogue.getMessages().size() - 1).getMessage());
+        }
+        else
+        {
+            ((TextView) convertView.findViewById(R.id.lastMessage)).setText("");
+        }
 
 
         return convertView;
     }
+
+
+
 
 
 }
