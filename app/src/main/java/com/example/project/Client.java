@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client implements Runnable {
@@ -13,11 +14,11 @@ public class Client implements Runnable {
     private Message message;
     private String ip;
 
-    public Client() throws Exception {
+    Client() throws Exception {
         throw new Exception("Do not use this method, client can1t work without ip and message");
     }
 
-    public Client(String ip, Message message) {
+    Client(String ip, Message message) {
         this.message = message;
         this.ip = ip;
     }
@@ -41,7 +42,9 @@ public class Client implements Runnable {
 
                 Log.d(TAG, "Writing in chanel");
                 Gson gson = new Gson();
-                String clientMessage = gson.toJson(message);
+                //check if ip is localhost and use real ip for other
+                SendAbleMessage sendAbleMessage = new SendAbleMessage((ip.equals("localhost") ? "localhost" : InetAddress.getLocalHost().getHostAddress()), message);
+                String clientMessage = gson.toJson(sendAbleMessage);
 
                 // we`r sending message
                 out.writeUTF(clientMessage);
@@ -53,14 +56,11 @@ public class Client implements Runnable {
                     Thread.sleep(2000);
                     //do not exactly understand if it can generate exception but it is already in try{}
                     String input = in.readUTF();
-                    if (input != null && input.length() > 0) {
-                        //return message
-                        Log.d(TAG, "in.read():" + input);
+                    Log.d(TAG, "in.read():" + input);
 
-                    }
                 }catch (Exception e)
                 {
-                    Log.d(TAG,e.getMessage());
+                    e.printStackTrace();
                 }
 
             }

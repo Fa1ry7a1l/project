@@ -15,7 +15,7 @@ public class Server implements Runnable {
 
     private static String TAG = "Server";
     private String entry;
-    private Message msg;
+    private SendAbleMessage msg;
 
     private void startServer() throws IOException {
         //creating socket
@@ -43,20 +43,25 @@ public class Server implements Runnable {
                     Log.d(TAG, "Reading ");
                     entry = in.readUTF();
                     Gson gson = new Gson();
-                    msg = gson.fromJson(entry, Message.class);
-                    msg.setMine(false);
+                    msg = gson.fromJson(entry, SendAbleMessage.class);
+                    msg.getMessage().setMine(false);
 
 
                     //MainActivity.serverMessage.setText(entry);
-                    MainActivity.listView.post(new Runnable() {
+                    MainActivity.dialogueListView.post(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.getMessages().add(msg);
-                            try {
-                                MainActivity.updateAdapter();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                            for(int i=0;i<MainActivity.dialogues.size();i++)
+                            {
+                                if(MainActivity.dialogues.get(i).equals(msg))
+                                {
+                                    MainActivity.dialogues.get(i).getMessages().add(msg.getMessage());
+                                }
+
                             }
+                            MainActivity.updateAdapter();
+                            ChatActivity.updateAdapter();
+
                         }
                     });
 
@@ -87,7 +92,6 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-
             Log.d(TAG, "Server started from run");
             this.startServer();
         } catch (IOException e) {

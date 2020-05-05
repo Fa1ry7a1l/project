@@ -1,10 +1,11 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,102 +15,68 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
+    private static String TAG = "MainActivity";
 
-
-    String ip = "";
-    private static ArrayList<Message> messages = new ArrayList<>();
-    public Message answerHTTP = new Message();
-    boolean isServerStarted = false;
-    Message message;
-    static MessageAdapter messageAdapter;
-    public static ListView listView;
+    public static Dialogue dialogue;
+    private static DialogueAdapter dialogueAdapter;
+    public static ArrayList<Dialogue> dialogues;
+    public static ListView dialogueListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat);
-
-        messages.add(new Message("hi").setMine(false));
-        messages.add(new Message("how are u?").setMine(true));
-
-        messageAdapter = new MessageAdapter(this, messages);
-        listView = findViewById(R.id.messages_view);
-        listView.setAdapter(messageAdapter);
-
-        final ImageButton sendButton = findViewById(R.id.sendButton);
-        final EditText myMessageField = findViewById(R.id.sendMessage);
-        final EditText ipText = findViewById(R.id.ip);
+        setContentView(R.layout.dialogues);
         ServerStarter.execute();
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.d("MainActivity", "Button pressed");
-                if (!myMessageField.getText().toString().isEmpty()) {
-                    Log.d("MainActivity", "Sending message");
-                    Message msg = new Message(myMessageField.getText().toString());
-                    msg.setMine(true);
-                    message = Message.copy(msg);
-                    // message.setMine(false);
-                    messages.add(msg);
-
-                    ip = ipText.getText().toString();
-                    if (ip.equals("")) {
-                        ip = "localhost";
-                    }
-                    Log.d("MainActivity", "Trying to start client");
-                    ClientStarter.execute(ip,message);
-
-
-                    myMessageField.setText("");
-
-                    messageAdapter.notifyDataSetChanged();
-                    listView.smoothScrollToPosition(messages.size() - 1);
-
-
-                }
+        dialogues= makeDialogues();
+        dialogueAdapter = new DialogueAdapter(this, dialogues);
+        dialogueListView = findViewById(R.id.dialoguesList);
+        dialogueListView.setAdapter(dialogueAdapter);
+        dialogueListView.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MainActivity.dialogue = dialogueAdapter.getItem(position);
+                Intent intentChat = new Intent(getApplicationContext(), ChatActivity.class);
+                startActivity(intentChat);
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dialogueAdapter.notifyDataSetChanged();
 
 
     }
 
-    public static ArrayList<Message> getMessages() {
-        return messages;
+    public static void updateAdapter()
+    {
+        MainActivity.dialogueAdapter.notifyDataSetChanged();
     }
 
-    public static void updateAdapter() throws InterruptedException {
-        messageAdapter.notifyDataSetChanged();
-        Thread.sleep(10);
-        listView.smoothScrollToPosition(messages.size() - 1);
-    }
 
+    ArrayList<Dialogue> makeDialogues() {
+        ArrayList<Dialogue> dialogues = new ArrayList<>();
+        dialogues.add(new Dialogue());
+        dialogues.get(0).setName("Mary");
+        dialogues.get(0).setMessages(new ArrayList<Message>());
+        dialogues.get(0).getMessages().add(new Message("hi"));
+
+        return dialogues;
+    }
 
     static class ServerStarter {
 
         static ExecutorService executorServer = Executors.newFixedThreadPool(1);
 
         static void execute() {
-                Log.d("MainActivity", "Starting server");
-                Server server = new Server();
+            Log.d(MainActivity.TAG, "Starting server");
+            Server server = new Server();
             executorServer.execute(server);
 
 
         }
-    }
-
-    static class ClientStarter {
-        static ExecutorService executorClient = Executors.newFixedThreadPool(1);
-
-        static void execute(String ip, Message message) {
-            Log.d("MainActivity", "Starting client");
-            Client client = new Client(ip, message);
-            executorClient.execute(client);
-        }
-
-
     }
 
 

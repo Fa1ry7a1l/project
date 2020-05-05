@@ -1,53 +1,43 @@
 package com.example.project;
 
-import android.app.ListActivity;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Dialogue extends ListActivity {
-    private String name="";
-    private ArrayList<Message>messages;
+public class Dialogue {
+    private String TAG = "Dialogue";
+
+    protected String ip = "";
+    protected String name = "";
+    protected ArrayList<Message> messages;
 
     //constructors
-    public Dialogue()
-    {
-        name="";
-        messages.clear();
-        messages=new ArrayList<Message>();
+    public Dialogue() {
+        this("localhost","",new ArrayList<Message>());
     }
-    public Dialogue(String s)
-    {
-        this.setName(s);
-        messages.clear();
 
-        messages=new ArrayList<Message>();
-    }
-    public Dialogue(String s, ArrayList<Message> m)
+
+
+    public Dialogue(String ip, String name, ArrayList<Message> messages)
     {
-        this.setName(s).setMessages(m);
+        this.setIp(ip).setName(name).setMessages(messages);
     }
 
     //setters
     public Dialogue setName(String s)
     {
-        try {
-            char[] mass = new char[s.length()];
-            s.getChars(0, s.length(), mass, 0);
-            name = new String(mass);
-        }catch (Exception e)
-        {
-            Toast.makeText(getApplicationContext(),"Ошибка в Создании строки. Диалог.",Toast.LENGTH_LONG).show();
-        }
+        this.name = new String(s);
         return this;
     }
     public Dialogue setMessages(ArrayList<Message> m)
     {
+        //it generates warnings in committing but if i change it  app do no work
         messages= (ArrayList<Message>)m.clone();
         return this;
 
+    }
+
+    public Dialogue setIp(String ip) {
+        this.ip = ip;
+        return this;
     }
 
     //getters
@@ -59,7 +49,20 @@ public class Dialogue extends ListActivity {
         return name;
     }
 
-    //ArrayAdapter<String> dialogueAdapter=new ArrayAdapter<String>(this,android.R.layout.)
+    public String getIp() {
+        return ip;
+    }
+
+    //it uses in server class
+    public boolean equals(SendAbleMessage sendAbleMessage)
+    {
+        /*if(sendAbleMessage.getIpFrom().equals(this.ip))
+        {
+            return true;
+        }
+        return false;*/
+        return (sendAbleMessage.getIpFrom().equals(this.ip)?true:false);
+    }
 
 
 

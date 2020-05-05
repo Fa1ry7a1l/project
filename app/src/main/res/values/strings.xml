@@ -5,5 +5,9 @@
     <string name="send_button_description">Send button</string>
     <string name="default_opponent_name">Rose</string>
     <string name="default_message_in_chat">How are you doing? This is a long message that should probably wrap.</string>
+    <string name="default_name">Mary</string>
+    <string name="default_icon_image">icon</string>
+    <string name="default_message">hi how r u?</string>
+    <string name="settings_button">settings_button</string>
 
 </resources>

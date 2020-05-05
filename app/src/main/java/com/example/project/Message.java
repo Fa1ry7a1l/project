@@ -3,9 +3,12 @@ package com.example.project;
 import java.util.Date;
 
 public class Message {
-    private Date date;
-    private String message;
-    private boolean mine;
+
+    private String TAG = "Message";
+
+     Date date;
+     String message;
+     boolean mine;
 
     Message() {
         message = "";
@@ -13,7 +16,7 @@ public class Message {
         mine = false;
     }
 
-    public Message(String a) {
+     Message(String a) {
         message = a;
         date = new Date();
         mine = false;
@@ -38,11 +41,11 @@ public class Message {
     }
 
     // getters
-    private Date getDate() {
+     Date getDate() {
         return date;
     }
 
-    public String getMessage() {
+     String getMessage() {
         return message;
     }
 
@@ -55,21 +58,21 @@ public class Message {
         message = m;
     }
 
-    public Message setMine(boolean isMine) {
+     Message setMine(boolean isMine) {
         this.mine = isMine;
         return this;
     }
 
-    public boolean isMine() {
+     boolean isMine() {
         return this.mine;
     }
 
-    public String isString()// date message
+     String isString()// date message
     {
         return date.toString() + " " + message;
     }
 
-    public static Message copy(Message m) {
+     static Message copy(Message m) {
         boolean mine = m.isMine();
         Date date = (Date) m.getDate().clone();
         String message = new String(m.getMessage());
