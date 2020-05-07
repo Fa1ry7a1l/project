@@ -44,6 +44,7 @@ public class Client implements Runnable {
                 Gson gson = new Gson();
                 //check if ip is localhost and use real ip for other
                 SendAbleMessage sendAbleMessage = new SendAbleMessage((ip.equals("localhost") ? "localhost" : InetAddress.getLocalHost().getHostAddress()), message);
+                sendAbleMessage.setIpFor(ip);
                 String clientMessage = gson.toJson(sendAbleMessage);
 
                 // we`r sending message

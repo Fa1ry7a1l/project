@@ -22,7 +22,7 @@
                 android:contentDescription="@string/settings_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/settings_img" />
+                android:background="@drawable/recover_person" />
 
 
         </LinearLayout>

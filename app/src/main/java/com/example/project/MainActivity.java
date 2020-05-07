@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialogues);
+        setContentView(R.layout.dialogues_activity);
         ServerStarter.execute();
 
         dialogues=/* makeDialogues();*/ load().getDialogues();
@@ -44,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentChat = new Intent(getApplicationContext(), ChatActivity.class);
                 startActivity(intentChat);
 
+            }
+        });
+
+        ImageButton settingsButton = findViewById(R.id.buttonSettings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentChat = new Intent(getApplicationContext(), QRShowActivity.class);
+                startActivity(intentChat);
             }
         });
     }
@@ -99,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPreferences.edit();
         SaveLoader saveLoader= new SaveLoader(MainActivity.dialogues);
-        editor.putString(TAG,saveLoader.toString());
+        editor.putString(MainActivity.SAVE_TAG,saveLoader.toString());
         editor.apply();
         Log.d(MainActivity.SAVE_TAG,"Everything saved");
     }

@@ -8,39 +8,35 @@ public class Message {
 
      Date date;
      String message;
-     boolean mine;
+     int mine;
 
     Message() {
         message = "";
         date = new Date();
-        mine = false;
+        mine = 0;
     }
 
      Message(String a) {
         message = a;
         date = new Date();
-        mine = false;
+        mine = 0;
     }
 
-    Message(String a, Date d) {
-        message = a;
-        date = d;
-        mine = false;
-    }
+
 
     private Message(String a, Date d, boolean is) {
         message = a;
         date = d;
-        mine = is;
+        mine = is?1:0;
     }
     Message(Message a)
     {
-        message=String.copyValueOf(a.getMessage().toCharArray());
+        message=new String(a.getMessage());
         date=a.date;
-        mine=a.isMine();
+        mine=a.mine;
     }
 
-    // getters
+
      Date getDate() {
         return date;
     }
@@ -49,7 +45,10 @@ public class Message {
         return message;
     }
 
-    // setters
+    void setStatus(int a)//1 - mine  0- not mine  // 2 - reconnect
+    {
+        this.mine = a;
+    }
     void setDate(Date d) {
         date = d;
     }
@@ -59,12 +58,12 @@ public class Message {
     }
 
      Message setMine(boolean isMine) {
-        this.mine = isMine;
+        this.mine = isMine?1:0;
         return this;
     }
 
      boolean isMine() {
-        return this.mine;
+        return this.mine>0?true:false;
     }
 
      String isString()// date message

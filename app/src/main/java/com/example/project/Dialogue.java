@@ -8,6 +8,9 @@ public class Dialogue {
     protected String ip = "";
     protected String name = "";
     protected ArrayList<Message> messages;
+    protected String recoverCode = null;
+
+
 
     //constructors
     public Dialogue() {
@@ -20,6 +23,9 @@ public class Dialogue {
     {
         this.setIp(ip).setName(name).setMessages(messages);
     }
+
+
+
 
     //setters
     public Dialogue setName(String s)
@@ -40,6 +46,11 @@ public class Dialogue {
         return this;
     }
 
+    public Dialogue setRecoverCode(String recoverCode) {
+        this.recoverCode = recoverCode;
+        return this;
+    }
+
     //getters
     public ArrayList<Message> getMessages() {
         return messages;
@@ -53,6 +64,10 @@ public class Dialogue {
         return ip;
     }
 
+    public String getRecoverCode() {
+        return recoverCode;
+    }
+
     //it uses in server class
     public boolean equals(SendAbleMessage sendAbleMessage)
     {
@@ -61,12 +76,8 @@ public class Dialogue {
             return true;
         }
         return false;*/
+
         return (sendAbleMessage.getIpFrom().equals(this.ip)?true:false);
     }
-
-
-
-
-
 
 }
