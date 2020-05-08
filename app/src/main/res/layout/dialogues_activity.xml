@@ -18,11 +18,11 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/buttonSettings"
+                android:id="@+id/addPerson"
                 android:contentDescription="@string/settings_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/recover_person" />
+                android:background="@drawable/add_person" />
 
 
         </LinearLayout>

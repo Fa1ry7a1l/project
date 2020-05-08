@@ -7,9 +7,8 @@ public class Dialogue {
 
     protected String ip = "";
     protected String name = "";
-    protected ArrayList<Message> messages;
     protected String recoverCode = null;
-
+    protected ArrayList<Message> messages;
 
 
     //constructors
@@ -21,8 +20,34 @@ public class Dialogue {
 
     public Dialogue(String ip, String name, ArrayList<Message> messages)
     {
-        this.setIp(ip).setName(name).setMessages(messages);
+        this.setIp(ip).setName(name).setMessages(messages).setMainId(mainId+1).setId(mainId);
     }
+
+
+    public static int getMainId() {
+        return mainId;
+    }
+
+    public Dialogue setMainId(int mainId) {
+        Dialogue.mainId = mainId;
+        return this;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Dialogue setId(int id) {
+        this.id = id;
+        return this;
+    }
+
+    protected static int mainId = 0;
+    protected int id;
+
+
+
+
 
 
 

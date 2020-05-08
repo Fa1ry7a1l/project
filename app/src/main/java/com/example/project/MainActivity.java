@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static String TAG = "MainActivity";
     public static String SAVE_TAG="MainActivity";
 
@@ -48,14 +48,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton settingsButton = findViewById(R.id.buttonSettings);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentChat = new Intent(getApplicationContext(), QRShowActivity.class);
-                startActivity(intentChat);
-            }
-        });
+        ImageButton settingsButton = findViewById(R.id.addPerson);
+        settingsButton.setOnClickListener(this);
     }
 
     @Override
@@ -73,6 +67,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            case R.id.addPerson:
+                Intent intentChat = new Intent(getApplicationContext(), AddPersonActivity.class);
+                startActivity(intentChat);
+                break;
+        }
+
+    }
+
+
 
     public static void updateAdapter()
     {
@@ -85,10 +92,13 @@ public class MainActivity extends AppCompatActivity {
         dialogues.add(new Dialogue());
         dialogues.get(0).setName("Mary");
         dialogues.get(0).setMessages(new ArrayList<Message>());
-        //dialogues.get(0).getMessages().add(new Message("hi"));
+        dialogues.add(new Dialogue().setName("John").setIp(Utils.getIPAddress(true)));
+
 
         return dialogues;
     }
+
+
 
     static class ServerStarter {
 
@@ -124,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
             return new SaveLoader();
         }
         return SaveLoader.fromString(loadedText);
-
 
     }
 

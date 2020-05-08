@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -13,15 +14,22 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     private String TAG = "ChatActivity";
+    private Activity activity = this;
+
+    private ImageButton backButton;
+    private ImageButton recoverButton;
+    private ImageButton sendButton;
 
 
     String ip ;
@@ -46,9 +54,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         listView = findViewById(R.id.messages_view);
         listView.setAdapter(messageAdapter);
 
-        final ImageButton sendButton = findViewById(R.id.sendButton);
-        final ImageButton recoverButton = findViewById(R.id.recoverPersonConnection);
-        final ImageButton backButton = findViewById(R.id.arrowBackButton);
+        sendButton = findViewById(R.id.sendButton);
+        recoverButton = findViewById(R.id.recoverPersonConnection);
+        backButton = findViewById(R.id.arrowBackButton);
         listView.smoothScrollToPosition(messages.size() - 1);
         myMessageField = findViewById(R.id.sendMessage);
 
@@ -100,30 +108,15 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.recoverPersonConnection:
-                try {
-                    createQR();
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
+                ExecutorService executorClient = Executors.newFixedThreadPool(1);
+                QRGen qrGen = new QRGen();
+                executorClient.execute(qrGen);
+
                 break;
-
         }
-
-
     }
 
 
-    static class ClientStarter {
-        static ExecutorService executorClient = Executors.newFixedThreadPool(1);
-
-        static void execute(String ip, Message message) {
-            Log.d("MainActivity", "Starting client");
-            Client client = new Client(ip, message);
-            executorClient.execute(client);
-        }
-
-
-    }
 
     @Override
     protected void onStop() {
@@ -143,33 +136,68 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(MainActivity.SAVE_TAG,"Everything saved");
     }
 
-    void createQR() throws WriterException {
-        String message = "Привет";
-        //ЗАПИШИ В MESSAGE ЧТО НИБУДЬ ДА
+    class QRGen implements Runnable {
+        ExecutorService executorClient = Executors.newFixedThreadPool(1);
 
+        void createQR() throws WriterException {
+            String message = "Привет";
+            Random rnd = new Random(System.currentTimeMillis());
 
-        //creating sendabel img
-        Uri bmpUri= QRCodeGenerator.getLocalBitmapUri( QRCodeGenerator.encodeAsBitmap(message, BarcodeFormat.QR_CODE,500,500),this);
-        if (bmpUri != null) {
+            //creating new connecting code
+            char[] mass = new char[20];
+            for (int i = 0; i < mass.length; i++) {
+
+                mass[i] = (char) ((rnd.nextInt(2) == 1 ? (int) ('a') : (int) ('A')) + rnd.nextInt(((int) 'z' - (int) 'a')));
+            }
+            message = new String(mass);
+
             try {
-                //bmpUri = new Uri(bmpUri.getPath());
-                // Construct a ShareIntent with link to image
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-                shareIntent.setType("image/*");
-                // Launch sharing dialog for image
-                startActivity(Intent.createChooser(shareIntent, "Share Image"));
-            }
-            catch (Exception e)
-            {
+                SendAbleMessage sendAbleMessage = new SendAbleMessage().setMessage(new Message(message).setStatus(
+                        2*(int)Math.pow(10,Integer.toString(MainActivity.dialogue.getId()).length())
+                        +MainActivity.dialogue.getId())).setIpFor(Utils.getIPAddress(true)).setIpFrom("");
+                //if last line generate exception, i will replace message on link to i wanna give u love or a link for cat
+
+                MainActivity.dialogue.setRecoverCode(sendAbleMessage.getMessage().getMessage());
+                Gson gson = new Gson();
+                message = gson.toJson(sendAbleMessage);
+
+            } catch (Exception e) {
                 e.printStackTrace();
+                message = rnd.nextInt(2) == 1 ? "https://www.youtube.com/watch?v=dQw4w9WgXcQ" : "https://i.ytimg.com/vi/jpsGLsaZKS0/maxresdefault.jpg";
             }
-        } else {
-            Toast.makeText(this,"Something gone wrong", Toast.LENGTH_SHORT).show();
+            //place code into dialogue
+            MainActivity.dialogue.setRecoverCode(new String(mass));
+
+
+            //creating sendabel img
+            Uri bmpUri = QRCodeGenerator.getLocalBitmapUri(QRCodeGenerator.encodeAsBitmap(message, BarcodeFormat.QR_CODE, 500, 500), activity);
+            if (bmpUri != null) {
+                try {
+                    //bmpUri = new Uri(bmpUri.getPath());
+                    // Construct a ShareIntent with link to image
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+                    shareIntent.setType("image/*");
+                    // Launch sharing dialog for image
+                    startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Something gone wrong", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
+        @Override
+        public void run() {
+            try {
+                createQR();
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+        }
     }
-
 }
 

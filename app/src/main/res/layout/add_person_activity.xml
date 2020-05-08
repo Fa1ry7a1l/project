@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="bottom"
+    android:clipToPadding="false"
+    android:focusableInTouchMode="true"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatHotBar"
+        android:orientation="horizontal"
+        android:background="@drawable/hot_bar_background"
+        android:layout_alignParentTop="true">
+            <ImageButton
+                android:id="@+id/arrowBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/arrow_back"
+                android:contentDescription="@string/arrow_back"
+                android:layout_alignParentStart="true"
+                android:clickable="true"
+                android:focusable="true"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/addPerson"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/add_person"
+        android:backgroundTint="#707070"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageButton
+        android:id="@+id/generateNewQr"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/new_connection"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+
+</RelativeLayout>

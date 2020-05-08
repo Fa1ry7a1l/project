@@ -5,6 +5,7 @@
     <!-- xmlns:tools="http://schemas.android.com/tools"-->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
@@ -36,11 +37,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".ChatActivity">
         </activity>
-        <activity android:name=".QRShowActivity">
 
+        <activity android:name=".AddPersonActivity">
         </activity>
+
     </application>
 
 </manifest>

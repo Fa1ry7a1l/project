@@ -44,26 +44,52 @@ public class Server implements Runnable {
                     entry = in.readUTF();
                     Gson gson = new Gson();
                     msg = gson.fromJson(entry, SendAbleMessage.class);
-                    msg.getMessage().setMine(false);
-
-
-                    //MainActivity.serverMessage.setText(entry);
-                    MainActivity.dialogueListView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            for(int i=0;i<MainActivity.dialogues.size();i++)
-                            {
-                                if(MainActivity.dialogues.get(i).equals(msg))
+                    switch ( (int)((Integer.toString(msg.getMessage().getStatus())).charAt(0))-(int)('0') ) {
+                        case 2:
+                            //getting code of sender
+                            int code =  msg.getMessage().getStatus()  -(int)( 2 * Math.pow(10,(Integer.toString(msg.getMessage().getStatus())).length() - 1));
+                            Log.d(TAG,"code " +code);
+                            for (int i = 0; i < MainActivity.dialogues.size(); i++) {
+                                if(MainActivity.dialogues.get(i).getId() == code )
                                 {
-                                    MainActivity.dialogues.get(i).getMessages().add(msg.getMessage());
+                                    try {
+                                        Log.d(TAG+"000000",gson.toJson(MainActivity.dialogue));
+
+                                        if (msg.getMessage().getMessage().equals(MainActivity.dialogues.get(i).getRecoverCode())) {
+
+                                            MainActivity.dialogues.get(i).setRecoverCode(null);
+                                            MainActivity.dialogues.get(i).setIp(msg.getIpFrom());
+                                            Log.d(TAG+"111111",gson.toJson(MainActivity.dialogue));
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                    break;
                                 }
 
                             }
-                            MainActivity.updateAdapter();
-                            ChatActivity.updateAdapter();
+                            break;
+                        default:
 
-                        }
-                    });
+                            msg.getMessage().setMine(false);
+                            //MainActivity.serverMessage.setText(entry);
+                            MainActivity.dialogueListView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for (int i = 0; i < MainActivity.dialogues.size(); i++) {
+                                        if (MainActivity.dialogues.get(i).equals(msg)) {
+                                            MainActivity.dialogues.get(i).getMessages().add(msg.getMessage());
+                                        }
+                                    }
+                                    MainActivity.updateAdapter();
+                                    ChatActivity.updateAdapter();
+
+                                }
+                            });
+                            break;
+                    }
 
                     Log.d(TAG, "Message: " + entry);
 

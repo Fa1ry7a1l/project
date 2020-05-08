@@ -1,7 +1,9 @@
 package com.example.project;
 
 public class SendAbleMessage {
-     String ipFrom;
+    private String ipFrom;
+    private String ipFor;
+    private Message message;
 
     public String getIpFor() {
         return ipFor;
@@ -12,8 +14,6 @@ public class SendAbleMessage {
         return this;
     }
 
-    String ipFor;
-     Message message;
 
     //constructors
     SendAbleMessage()

@@ -47,9 +47,4 @@ public class DialogueAdapter extends ArrayAdapter<Dialogue> {
 
         return convertView;
     }
-
-
-
-
-
 }

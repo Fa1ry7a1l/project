@@ -45,10 +45,18 @@ public class Message {
         return message;
     }
 
-    void setStatus(int a)//1 - mine  0- not mine  // 2 - reconnect
+    Message setStatus(int a)//1 - mine  0- not mine  // 2 - reconnect
     {
         this.mine = a;
+        return this;
     }
+
+    int getStatus()
+    {
+        return mine;
+    }
+
+
     void setDate(Date d) {
         date = d;
     }

@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client implements Runnable {
@@ -23,7 +22,7 @@ public class Client implements Runnable {
         this.ip = ip;
     }
 
-    private static void startClient(String ip, Message message) {
+    private void startClient(String ip, Message message) {
         Log.d(TAG, "StartClient run");
 
         try {
@@ -43,7 +42,8 @@ public class Client implements Runnable {
                 Log.d(TAG, "Writing in chanel");
                 Gson gson = new Gson();
                 //check if ip is localhost and use real ip for other
-                SendAbleMessage sendAbleMessage = new SendAbleMessage((ip.equals("localhost") ? "localhost" : InetAddress.getLocalHost().getHostAddress()), message);
+                SendAbleMessage sendAbleMessage = new SendAbleMessage((ip.equals("localhost") ? "localhost" : Utils.getIPAddress(true)), message);
+                Log.d(TAG,Utils.getIPAddress(true));
                 sendAbleMessage.setIpFor(ip);
                 String clientMessage = gson.toJson(sendAbleMessage);
 
