@@ -7,13 +7,16 @@ import java.util.ArrayList;
 public class SaveLoader {
     ArrayList<Dialogue> dialogues;
 
+    InvitesHead invitesHead;
+
     SaveLoader()
     {
-        dialogues = new ArrayList<>();
+        this(new ArrayList<Dialogue>(), new InvitesHead());
     }
-    SaveLoader(ArrayList<Dialogue> dialogues)
+    SaveLoader(ArrayList<Dialogue> dialogues,InvitesHead invitesHead )
     {
         this.dialogues=dialogues;
+        this.invitesHead = invitesHead;
     }
 
      ArrayList<Dialogue> getDialogues() {
@@ -22,6 +25,15 @@ public class SaveLoader {
 
      SaveLoader setDialogues(ArrayList<Dialogue> dialogues) {
         this.dialogues = dialogues;
+        return this;
+    }
+
+    public InvitesHead getInvitesHead() {
+        return invitesHead;
+    }
+
+    public SaveLoader setInvitesHead(InvitesHead invitesHead) {
+        this.invitesHead = invitesHead;
         return this;
     }
 

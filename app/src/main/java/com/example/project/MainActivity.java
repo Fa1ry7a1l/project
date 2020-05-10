@@ -33,8 +33,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogues_activity);
         ServerStarter.execute();
-
-        dialogues=/* makeDialogues();*/ load().getDialogues();
+        SaveLoader saveLoader=load();
+        dialogues=/* makeDialogues();*/ saveLoader.getDialogues();
+        InvitesHead.invitesHead=saveLoader.invitesHead;
         if(dialogues.size() == 0)
         {
             dialogues=makeDialogues();
@@ -93,9 +94,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Dialogue> makeDialogues() {
         ArrayList<Dialogue> dialogues = new ArrayList<>();
         dialogues.add(new Dialogue());
-        dialogues.get(0).setName("Mary");
-        dialogues.get(0).setMessages(new ArrayList<Message>());
-        dialogues.add(new Dialogue().setName("John").setIp(Utils.getIPAddress(true)));
+        dialogues.get(0).setName("Mary").setMessages(new ArrayList<Message>());
+        dialogues.get(0).getMessages().add(new Message().setMessage("Hi, I`m Mary and Im using ur address: localhost "));
+       // dialogues.get(0).setMessages(new ArrayList<Message>());
+        dialogues.add(new Dialogue().setName("John").setIp(Utils.getIPAddress(true)).setMessages(new ArrayList<Message>()));
+        dialogues.get(1).getMessages().add(new Message("Hi, Im John and Im using ur address: ur ip in local network"));
 
 
         return dialogues;
@@ -121,11 +124,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        SaveLoader saveLoader= new SaveLoader(MainActivity.dialogues);
+        SaveLoader saveLoader = new SaveLoader(MainActivity.dialogues,InvitesHead.invitesHead);
         editor.putString(MainActivity.SAVE_TAG,saveLoader.toString());
         editor.apply();
         Log.d(MainActivity.SAVE_TAG,"Everything saved");
     }
+
     SaveLoader load()
     {
         SharedPreferences sharedPreferences= getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);

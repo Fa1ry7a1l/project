@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server implements Runnable {
 
@@ -44,6 +45,9 @@ public class Server implements Runnable {
                     entry = in.readUTF();
                     Gson gson = new Gson();
                     msg = gson.fromJson(entry, SendAbleMessage.class);
+
+                    Log.d(TAG,"Code for switch is: "+((int)((Integer.toString(msg.getMessage().getStatus())).charAt(0))-(int)('0')));
+
                     switch ( (int)((Integer.toString(msg.getMessage().getStatus())).charAt(0))-(int)('0') ) {
                         case 2:
                             //getting code of sender
@@ -69,6 +73,30 @@ public class Server implements Runnable {
                                     break;
                                 }
 
+                            }
+                            break;
+                        case 3:
+                            int num =  msg.getMessage().getStatus()  -(int)( 2 * Math.pow(10,(Integer.toString(msg.getMessage().getStatus())).length() - 1));
+                            try{
+                                for(int i=0;i<InvitesHead.invitesHead.newPeople.size();i++)
+                                {
+                                    if(InvitesHead.invitesHead.newPeople.get(i).getNum() == num)
+                                    {
+                                        NewPerson newPerson = gson.fromJson(msg.getMessage().getMessage(),NewPerson.class);
+                                        if(!newPerson.getCode().equals(InvitesHead.invitesHead.newPeople.get(i).getCode()))
+                                        {
+                                            break;
+                                        }
+                                        MainActivity.dialogues.add(new Dialogue().setIp(msg.getIpFrom()).setName(newPerson.getFriendName()).setMessages(new ArrayList<Message>()));
+                                        MainActivity.updateAdapter();
+                                        //ChatActivity.updateAdapter();
+                                        break;
+                                    }
+                                }
+
+                            }catch (Exception e)
+                            {
+                                e.printStackTrace();
                             }
                             break;
                         default:

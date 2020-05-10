@@ -25,6 +25,47 @@
                 android:clickable="true"
                 android:focusable="true"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="If you are adding new user, please enter the name!"
+        android:textSize="30dp"
+        android:textColor="#878787"
+        android:layout_below="@+id/chatHotBar"
+        android:id="@+id/mainMessage"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Max length is 20 symbols."
+        android:textSize="20dp"
+        android:textColor="#878787"
+        android:layout_below="@+id/mainMessage"
+        android:id="@+id/secondMessage"/>
+
+    <EditText
+        android:id="@+id/friendName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/secondMessage"
+        android:hint="Enter your friend name"
+        android:maxLength="20"
+        android:textColor="#878787"
+        android:textColorHint="#A1A1A1"
+        android:singleLine="true"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/friendName"
+        android:hint="Enter your name."
+        android:id="@+id/ourName"
+        android:maxLength="20"
+        android:textColor="#878787"
+        android:textColorHint="#A1A1A1"
+        android:singleLine="true"
+
+        />
 
     <ImageButton
         android:id="@+id/addPerson"

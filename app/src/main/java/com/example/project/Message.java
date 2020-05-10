@@ -61,8 +61,9 @@ public class Message {
         date = d;
     }
 
-    void setMessage(String m) {
+    Message setMessage(String m) {
         message = m;
+        return this;
     }
 
      Message setMine(boolean isMine) {

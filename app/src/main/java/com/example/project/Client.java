@@ -13,6 +13,18 @@ public class Client implements Runnable {
     private Message message;
     private String ip;
 
+    public int getMode() {
+        return mode;
+    }
+
+    public Client setMode(int mode) {
+        this.mode = mode;
+        return this;
+    }
+
+    private int mode = 0;
+
+
     Client() throws Exception {
         throw new Exception("Do not use this method, client can1t work without ip and message");
     }
@@ -22,7 +34,7 @@ public class Client implements Runnable {
         this.ip = ip;
     }
 
-    private void startClient(String ip, Message message) {
+    private void startClient(final String ip, Message message) {
         Log.d(TAG, "StartClient run");
 
         try {
@@ -57,6 +69,20 @@ public class Client implements Runnable {
                     Thread.sleep(2000);
                     //do not exactly understand if it can generate exception but it is already in try{}
                     String input = in.readUTF();
+                    if(getMode() == 3 && clientMessage.equals(input))
+                    {
+                        final NewPerson newPerson=  gson.fromJson(message.getMessage(),NewPerson.class);
+
+
+                        MainActivity.dialogueListView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.dialogues.add(new Dialogue().setName(newPerson.getOurName()).setIp(ip));
+                                MainActivity.updateAdapter();
+
+                            }
+                        });
+                    }
                     Log.d(TAG, "in.read():" + input);
 
                 }catch (Exception e)
@@ -70,9 +96,11 @@ public class Client implements Runnable {
             in.close();
             out.close();
             socket.close();
+            setMode(0);
 
         } catch (Exception e) {
             e.printStackTrace();
+            setMode(0);
             //Log.d(TAG, e.getMessage());
         }
 

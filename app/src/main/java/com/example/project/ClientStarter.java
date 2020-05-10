@@ -15,5 +15,10 @@ public class ClientStarter {
         Client client = new Client(ip, message);
         executorClient.execute(client);
     }
+    static void execute(String ip, Message message, int mode) {
+        Log.d(TAG, "Starting client");
+        Client client = new Client(ip, message).setMode(mode);
+        executorClient.execute(client);
+    }
 }
 

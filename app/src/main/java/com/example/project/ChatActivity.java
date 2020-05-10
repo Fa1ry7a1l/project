@@ -130,7 +130,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        SaveLoader saveLoader= new SaveLoader(MainActivity.dialogues);
+        SaveLoader saveLoader = new SaveLoader(MainActivity.dialogues,InvitesHead.invitesHead);
         editor.putString(MainActivity.SAVE_TAG,saveLoader.toString());
         editor.apply();
         Log.d(MainActivity.SAVE_TAG,"Everything saved");

@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 class ServerV2 implements Runnable {
     private static String TAG = "ServerV2";
@@ -46,6 +47,13 @@ class ServerV2 implements Runnable {
                 entry = in.readUTF();
                 Gson gson = new Gson();
                 msg = gson.fromJson(entry, SendAbleMessage.class);
+                Log.d(TAG, "Message: " + entry);
+
+                Log.d(TAG, "Sent message to client");
+                out.writeUTF(entry);
+                out.flush();
+
+                Log.d(TAG, "Code for switch is: " + ((int) ((Integer.toString(msg.getMessage().getStatus())).charAt(0)) - (int) ('0')));
                 switch ((int) ((Integer.toString(msg.getMessage().getStatus())).charAt(0)) - (int) ('0')) {
                     case 2:
                         //getting code of sender
@@ -71,6 +79,36 @@ class ServerV2 implements Runnable {
                         }
                         break;
                     case 3:
+                        int num = msg.getMessage().getStatus() - (int) (3 * Math.pow(10, (Integer.toString(msg.getMessage().getStatus())).length() - 1));
+                        try {
+                            Log.d(TAG,"Looking for New User");
+                            for (int i = 0; i < InvitesHead.invitesHead.newPeople.size(); i++) {
+                                if (InvitesHead.invitesHead.newPeople.get(i).getNum() == num) {
+                                    Log.d(TAG,"User found.");
+                                    final NewPerson newPerson = gson.fromJson(msg.getMessage().getMessage(), NewPerson.class);
+                                    if (!newPerson.getCode().equals(InvitesHead.invitesHead.newPeople.get(i).getCode())) {
+                                        Log.d(TAG,"Not correct code");
+                                        break;
+                                    }
+                                    MainActivity.dialogueListView.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            MainActivity.dialogues.add(new Dialogue().setIp(msg.getIpFrom()).setName(newPerson.getFriendName()).setMessages(new ArrayList<Message>()));
+                                            MainActivity.updateAdapter();
+                                            //ChatActivity.updateAdapter();
+
+                                        }
+                                    });
+
+                                    break;
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     default:
 
                         msg.getMessage().setMine(false);
@@ -89,11 +127,7 @@ class ServerV2 implements Runnable {
                             }
                         });
 
-                        Log.d(TAG, "Message: " + entry);
 
-                        Log.d(TAG, "Sent message to client");
-                        out.writeUTF(entry);
-                        out.flush();
 
 
                 }
