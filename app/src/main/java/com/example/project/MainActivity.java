@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static Dialogue dialogue;
     private static DialogueAdapter dialogueAdapter;
     public static ArrayList<Dialogue> dialogues;
+
+    //can be a reason of memory leak
+    //replace static to a new MainActivity member
     public static ListView dialogueListView;
 
     @Override
@@ -69,13 +72,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch(v.getId())
-        {
-            case R.id.addPerson:
+        //switch(v.getId())
+        //{
+        //   case R.id.addPerson:
                 Intent intentChat = new Intent(getApplicationContext(), AddPersonActivity.class);
                 startActivity(intentChat);
-                break;
-        }
+        //       break;
+        //}
 
     }
 
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         static void execute() {
             Log.d(MainActivity.TAG, "Starting server");
-            Server server = new Server();
+            ServerFactory server = new ServerFactory();
             executorServer.execute(server);
 
 
