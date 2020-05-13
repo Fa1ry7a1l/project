@@ -95,7 +95,6 @@ public class QRCodeGenerator  {
 
     public static Uri getLocalBitmapUri(Bitmap bitmap, Activity context)
     {
-
         Bitmap bit= bitmap;
         Uri bmpUri = null;
        try {

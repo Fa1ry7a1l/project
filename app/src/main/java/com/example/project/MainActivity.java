@@ -1,8 +1,13 @@
 package com.example.project;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,12 +16,17 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final int MY_PERMISSIONS_REQUEST = 9;
     private static String TAG = "MainActivity";
     public static String SAVE_TAG="MainActivity";
 
@@ -27,12 +37,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //can be a reason of memory leak
     //replace static to a new MainActivity member
     public static ListView dialogueListView;
+    private String[] permissions = new String[]{Manifest.permission.NFC_TRANSACTION_EVENT,Manifest.permission.NFC,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogues_activity);
+
+
+        //asking for access to write/read external storage and for NFC.
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.NFC_TRANSACTION_EVENT) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions,MY_PERMISSIONS_REQUEST);
+            Log.d(TAG,"GOT PERMISSIONS");
+        }
+
+
+        //!!!!!ПОМЕНЯЙ ПОТОК СЕРВЕРА НА СЕРВИС СЕРВЕРА
         ServerStarter.execute();
+        /////
         SaveLoader saveLoader=load();
         dialogues=/* makeDialogues();*/ saveLoader.getDialogues();
         InvitesHead.invitesHead=saveLoader.invitesHead;
@@ -60,6 +86,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         dialogueAdapter.notifyDataSetChanged();
+
+        Intent intent = getIntent();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            Parcelable[] rawMessages = intent.getParcelableArrayExtra(
+                    NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+            NdefMessage message = (NdefMessage) rawMessages[0]; // only one message transferred
+            String msg = new String(message.getRecords()[0].getPayload());
+
+            Gson gson = new Gson();
+            SendAbleMessage sendAbleMessage = gson.fromJson(msg,SendAbleMessage.class);
+            ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage.getMessage(),3);
+
+        }
 
 
     }

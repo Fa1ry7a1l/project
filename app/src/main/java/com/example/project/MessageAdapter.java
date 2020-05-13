@@ -42,7 +42,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             //if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.other_message, parent,false);
             //}
-            ((TextView)convertView.findViewById(R.id.sendersName)).setText(R.string.default_opponent_name);
+            ((TextView)convertView.findViewById(R.id.sendersName)).setText(MainActivity.dialogue.getName());
+            //((TextView)convertView.findViewById(R.id.sendersName)).setText(R.string.default_opponent_name);
             Log.d("MessageAdapter", "Message from other person:"+message.getMessage());
             ((TextView) convertView.findViewById(R.id.other_message_body)).setText(message.getMessage());
         }

@@ -69,8 +69,8 @@
 
     <ImageButton
         android:id="@+id/addPerson"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@drawable/add_person"
         android:backgroundTint="#707070"
         android:layout_alignParentBottom="true"
@@ -78,11 +78,21 @@
 
     <ImageButton
         android:id="@+id/generateNewQr"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@drawable/new_connection"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
+        android:background="@drawable/new_connection" />
+
+    <ImageButton
+        android:id="@+id/nfcButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="57dp"
+        android:layout_toLeftOf="@+id/generateNewQr"
+        android:backgroundTint="#707070"
+        android:background="@drawable/nfc" />
 
 
 </RelativeLayout>

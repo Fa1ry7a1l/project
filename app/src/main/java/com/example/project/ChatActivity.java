@@ -75,8 +75,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public static void updateAdapter(){
-        messageAdapter.notifyDataSetChanged();
-        listView.smoothScrollToPosition(messages.size() - 1);
+        if(messageAdapter != null) {
+            messageAdapter.notifyDataSetChanged();
+            listView.smoothScrollToPosition(messages.size() - 1);
+        }
     }
 
     @Override
