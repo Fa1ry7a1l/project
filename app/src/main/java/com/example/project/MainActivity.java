@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,7 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialogues_activity);
+        //Dialogue.privateKeyFormat = RSAHelper.generateKeyPair().getPrivate().getFormat();
+        //Dialogue.publicKeyFormat = RSAHelper.generateKeyPair().getPublic().getFormat();
 
+        //Log.d(TAG,"Private key format: "+ Dialogue.privateKeyFormat);
+        //Log.d(TAG,"Public key format: " + Dialogue.publicKeyFormat);
 
         //asking for access to write/read external storage and for NFC.
 
@@ -51,12 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.NFC_TRANSACTION_EVENT) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions,MY_PERMISSIONS_REQUEST);
-            Log.d(TAG,"GOT PERMISSIONS");
+            ActivityCompat.requestPermissions(this, permissions, MY_PERMISSIONS_REQUEST);
+            Log.d(TAG, "GOT PERMISSIONS");
         }
 
-
-        //!!!!!ПОМЕНЯЙ ПОТОК СЕРВЕРА НА СЕРВИС СЕРВЕРА
+        //server starts
         ServerStarter.execute();
         /////
         SaveLoader saveLoader=load();
@@ -133,10 +137,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     ArrayList<Dialogue> makeDialogues() {
         ArrayList<Dialogue> dialogues = new ArrayList<>();
-        dialogues.add(new Dialogue());
-        dialogues.get(0).setName("Mary").setMessages(new ArrayList<Message>());
-        dialogues.get(0).getMessages().add(new Message().setMessage("Hi, I`m Mary and Im using ur address: localhost "));
-       // dialogues.get(0).setMessages(new ArrayList<Message>());
+        //dialogues.add(new Dialogue());
+        //dialogues.get(0).setName("Mary").setMessages(new ArrayList<Message>());
+        //dialogues.get(0).getMessages().add(new Message().setMessage("Hi, I`m Mary and Im using ur address: localhost "));
+        // dialogues.get(0).setMessages(new ArrayList<Message>());
+
+        /*
+        dialogues.add(new Dialogue().setName("Mary").setMessages(new ArrayList<Message>()));
+        KeyPair keyPair = RSAHelper.generateKeyPair();
+        dialogues.get(0).friendsPublicKey = dialogues.get(0).myPublicKey = RSAHelper.getPublicKey(keyPair);
+        dialogues.get(0).myPrivateKey = RSAHelper.getPrivateKey(keyPair);
+        */
+
+        KeyPair keyPair = RSAHelper.generateKeyPair();
+        dialogues.add(new Dialogue("localhost", "Mary", new ArrayList<Message>(), RSAHelper.getPrivateKey(keyPair), RSAHelper.getPublicKey(keyPair), RSAHelper.getPublicKey(keyPair)));
+
+        dialogues.get(0).getMessages().add(new Message(RSAHelper.encrypt("What r u doing?", dialogues.get(0).friendsPublicKey)));
+        dialogues.get(0).getMessages().add(new Message(RSAHelper.decrypt(RSAHelper.encrypt("What r u doing?", dialogues.get(0).friendsPublicKey), dialogues.get(0).myPrivateKey)));
+
         dialogues.add(new Dialogue().setName("John").setIp(Utils.getIPAddress(true)).setMessages(new ArrayList<Message>()));
         dialogues.get(1).getMessages().add(new Message("Hi, Im John and Im using ur address: ur ip in local network"));
 

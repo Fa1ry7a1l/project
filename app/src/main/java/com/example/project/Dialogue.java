@@ -5,24 +5,64 @@ import java.util.ArrayList;
 public class Dialogue {
     private String TAG = "Dialogue";
 
+    //public static String privateKeyFormat = null;
+    //public static String publicKeyFormat = null;
+
     protected String ip = "";
     protected String name = "";
     protected String recoverCode = null;
     protected ArrayList<Message> messages;
 
+    protected byte[] myPrivateKey = null;
+    protected byte[] myPublicKey = null;
+    protected byte[] friendsPublicKey = null;
+
+    protected static int mainId = 0;
+    protected int id;
+
 
     //constructors
     public Dialogue() {
-        this("localhost","",new ArrayList<Message>());
+        this("localhost", "", new ArrayList<Message>());
     }
 
 
-
-    public Dialogue(String ip, String name, ArrayList<Message> messages)
-    {
-        this.setIp(ip).setName(name).setMessages(messages).setMainId(mainId+1).setId(mainId);
+    public Dialogue(String ip, String name, ArrayList<Message> messages) {
+        this.setIp(ip).setName(name).setMessages(messages).setMainId(mainId + 1).setId(mainId);
     }
 
+    public Dialogue(String ip, String name, ArrayList<Message> messages, byte[] myPrivateKey, byte[] myPublicKey, byte[] friendsPublicKey) {
+        this(ip, name, messages);
+        this.setMyPrivateKey(myPrivateKey).setMyPublicKey(myPublicKey).setFriendsPublicKey(friendsPublicKey);
+    }
+
+
+    public byte[] getMyPrivateKey() {
+        return myPrivateKey;
+    }
+
+    public Dialogue setMyPrivateKey(byte[] myPrivateKey) {
+        this.myPrivateKey = myPrivateKey;
+        return this;
+    }
+
+    public byte[] getMyPublicKey() {
+        return myPublicKey;
+    }
+
+    public Dialogue setMyPublicKey(byte[] myPublicKey) {
+        this.myPublicKey = myPublicKey;
+        return this;
+    }
+
+    public byte[] getFriendsPublicKey() {
+        return friendsPublicKey;
+    }
+
+    public Dialogue setFriendsPublicKey(byte[] friendsPublicKey) {
+        this.friendsPublicKey = friendsPublicKey;
+        return this;
+    }
 
     public static int getMainId() {
         return mainId;
@@ -41,16 +81,6 @@ public class Dialogue {
         this.id = id;
         return this;
     }
-
-    protected static int mainId = 0;
-    protected int id;
-
-
-
-
-
-
-
 
     //setters
     public Dialogue setName(String s)
