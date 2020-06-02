@@ -95,11 +95,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     Message msg = new Message(myMessageField.getText().toString());
                     msg.setMine(true);
                     message = Message.copy(msg);
-                    // message.setMine(false);
+                    message.setMessage(RSAHelper.encrypt(message.getMessage(), MainActivity.dialogue.getFriendsPublicKey()));
+
                     messages.add(msg);
 
                     Log.d(TAG, "Trying to start client");
-                    ClientStarter.execute(ip,message);
+                    ClientStarter.execute(ip, message);
 
 
                     myMessageField.setText("");
@@ -152,6 +153,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 mass[i] = (char) ((rnd.nextInt(2) == 1 ? (int) ('a') : (int) ('A')) + rnd.nextInt(((int) 'z' - (int) 'a')));
             }
             message = new String(mass);
+            //message = RSAHelper.encrypt(message,MainActivity.dialogue.getFriendsPublicKey());
 
             try {
                 SendAbleMessage sendAbleMessage = new SendAbleMessage().setMessage(new Message(message).setStatus(

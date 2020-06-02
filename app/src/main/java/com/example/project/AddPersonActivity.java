@@ -147,27 +147,6 @@ public class AddPersonActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-
-    /*@Override
-    protected void onResume(){
-        super.onResume();
-        Intent intent = getIntent();
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Parcelable[] rawMessages = intent.getParcelableArrayExtra(
-                    NfcAdapter.EXTRA_NDEF_MESSAGES);
-
-            NdefMessage message = (NdefMessage) rawMessages[0]; // only one message transferred
-            String msg = new String(message.getRecords()[0].getPayload());
-
-            Gson gson = new Gson();
-            SendAbleMessage sendAbleMessage = gson.fromJson(msg,SendAbleMessage.class);
-            ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage.getMessage(),3);
-
-        } //else
-           // mTextView.setText("Waiting for NDEF Message");
-
-    }*/
-
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
 

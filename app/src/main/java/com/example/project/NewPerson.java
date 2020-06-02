@@ -9,6 +9,29 @@ public class NewPerson {
     protected String ourName;
     protected String code;
 
+    protected byte[] myPublicKey = null;
+    protected byte[] friendsPublicKey = null;
+
+
+    public byte[] getMyPublicKey() {
+        return myPublicKey;
+    }
+
+    public NewPerson setMyPublicKey(byte[] myPublicKey) {
+        this.myPublicKey = myPublicKey;
+        return this;
+    }
+
+    public byte[] getFriendsPublicKey() {
+        return friendsPublicKey;
+    }
+
+    public NewPerson setFriendsPublicKey(byte[] friendsPublicKey) {
+        this.friendsPublicKey = friendsPublicKey;
+        return this;
+    }
+
+
     public int getNum() {
         return num;
     }
@@ -46,15 +69,19 @@ public class NewPerson {
     }
 
 
-
-
     public NewPerson(String friendName, String ourName) {
-        this(friendName,ourName, ++InvitesHead.invitesHead.counter, generateCode());
+        this(friendName, ourName, ++InvitesHead.invitesHead.counter, generateCode());
+    }
+
+    public NewPerson(String friendName, String ourName, int num, String code, byte[] myPublicKey, byte[] friendsPublicKey) {
+        this(friendName, ourName, num, code);
+        this.myPublicKey = myPublicKey;
+        this.friendsPublicKey = friendsPublicKey;
     }
 
     public NewPerson(String friendName, String ourName, int num, String code) {
         this.friendName = friendName;
-        this.ourName=ourName;
+        this.ourName = ourName;
         this.num = num;
         this.code = code;
         InvitesHead.invitesHead.newPeople.add(this);

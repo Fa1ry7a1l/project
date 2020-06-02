@@ -80,7 +80,7 @@ public class QRConnector extends AppCompatActivity implements Runnable {
                 SendAbleMessage sendAbleMessage = gson.fromJson(thisCode.rawValue, SendAbleMessage.class);
                 if((int)((Integer.toString(sendAbleMessage.getMessage().getStatus())).charAt(0))-(int)('0') ==3)
                 {
-                    ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage.getMessage(),3);
+                    ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage, 3);
                 }
                 else {
                     ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage.getMessage());

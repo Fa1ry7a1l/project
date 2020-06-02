@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.security.KeyPair;
 import java.util.ArrayList;
 
 class ServerV2 implements Runnable {
@@ -45,13 +46,13 @@ class ServerV2 implements Runnable {
 
                 Log.d(TAG, "Reading ");
                 entry = in.readUTF();
-                Gson gson = new Gson();
+                final Gson gson = new Gson();
                 msg = gson.fromJson(entry, SendAbleMessage.class);
                 Log.d(TAG, "Message: " + entry);
 
                 Log.d(TAG, "Sent message to client");
-                out.writeUTF(entry);
-                out.flush();
+                //out.writeUTF(entry);
+                //out.flush();
 
                 Log.d(TAG, "Code for switch is: " + ((int) ((Integer.toString(msg.getMessage().getStatus())).charAt(0)) - (int) ('0')));
                 switch ((int) ((Integer.toString(msg.getMessage().getStatus())).charAt(0)) - (int) ('0')) {
@@ -73,6 +74,9 @@ class ServerV2 implements Runnable {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                                out.writeUTF("Ok");
+                                out.flush();
+                                Log.d(TAG, "backMessage sent");
                                 break;
                             }
 
@@ -81,29 +85,38 @@ class ServerV2 implements Runnable {
                     case 3:
                         int num = msg.getMessage().getStatus() - (int) (3 * Math.pow(10, (Integer.toString(msg.getMessage().getStatus())).length() - 1));
                         try {
-                            Log.d(TAG,"Looking for New User");
-                            for (int i = 0; i < InvitesHead.invitesHead.newPeople.size(); i++) {
-                                if (InvitesHead.invitesHead.newPeople.get(i).getNum() == num) {
-                                    Log.d(TAG,"User found.");
-                                    final NewPerson newPerson = gson.fromJson(msg.getMessage().getMessage(), NewPerson.class);
-                                    if (!newPerson.getCode().equals(InvitesHead.invitesHead.newPeople.get(i).getCode())) {
-                                        Log.d(TAG,"Not correct code");
-                                        break;
-                                    }
-                                    MainActivity.dialogueListView.post(new Runnable() {
-                                        @Override
-                                        public void run() {
+                            Log.d(TAG, "Looking for New User " + num);
+                            Log.d(TAG, "User found.");
 
-                                            MainActivity.dialogues.add(new Dialogue().setIp(msg.getIpFrom()).setName(newPerson.getFriendName()).setMessages(new ArrayList<Message>()));
-                                            MainActivity.updateAdapter();
-                                            //ChatActivity.updateAdapter();
+                            NewPerson newPerson1 = gson.fromJson(gson.fromJson(msg.getMessage().getMessage(), SendAbleMessage.class).getMessage().getMessage(), NewPerson.class);
 
-                                        }
-                                    });
 
-                                    break;
+                            NewPerson returnNewPerson = newPerson1;
+                            final NewPerson newPerson = returnNewPerson;
+
+                            final KeyPair keyPair = RSAHelper.generateKeyPair();
+                            MainActivity.dialogueListView.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    MainActivity.dialogues.add(new Dialogue(msg.getIpFrom(), newPerson.getFriendName(), new ArrayList<Message>(), RSAHelper.getPrivateKey(keyPair),
+                                            RSAHelper.getPublicKey(keyPair), newPerson.getFriendsPublicKey()));
+
+                                    Log.d(TAG, "ADDED new user");
+                                    MainActivity.updateAdapter();
+                                    //ChatActivity.updateAdapter();
+
                                 }
-                            }
+                            });
+                            Log.d(TAG, newPerson.getFriendName());
+                            returnNewPerson.setMyPublicKey(RSAHelper.getPublicKey(keyPair));
+                            Log.d(TAG, "ReturnNewPerson is: " + gson.toJson(returnNewPerson));
+                            out.writeUTF(gson.toJson(returnNewPerson));
+                            Log.d(TAG, "returnNewPerson writed");
+                            out.flush();
+
+                            break;
+
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -118,7 +131,9 @@ class ServerV2 implements Runnable {
                             public void run() {
                                 for (int i = 0; i < MainActivity.dialogues.size(); i++) {
                                     if (MainActivity.dialogues.get(i).equals(msg)) {
-                                        MainActivity.dialogues.get(i).getMessages().add(msg.getMessage());
+                                        Message message = msg.getMessage();
+                                        message.setMessage(RSAHelper.decrypt(message.getMessage(), MainActivity.dialogues.get(i).getMyPrivateKey()));
+                                        MainActivity.dialogues.get(i).getMessages().add(message);
                                     }
                                 }
                                 MainActivity.updateAdapter();
@@ -126,11 +141,14 @@ class ServerV2 implements Runnable {
 
                             }
                         });
-
-
+                        out.writeUTF("ok");
+                        out.flush();
+                        Log.d(TAG, "BackMessage sent");
 
 
                 }
+
+
                 //closing streams
                 Log.d(TAG, "Client disconnected");
                 Log.d(TAG, "Closing connections");

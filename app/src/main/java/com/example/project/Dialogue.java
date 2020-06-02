@@ -36,6 +36,9 @@ public class Dialogue {
         this.setMyPrivateKey(myPrivateKey).setMyPublicKey(myPublicKey).setFriendsPublicKey(friendsPublicKey);
     }
 
+    public Dialogue(String ip, String name, ArrayList<Message> messages, byte[] myPrivateKey, byte[] myPublicKey) {
+        this(ip, name, messages, myPrivateKey, myPublicKey, null);
+    }
 
     public byte[] getMyPrivateKey() {
         return myPrivateKey;
@@ -85,7 +88,7 @@ public class Dialogue {
     //setters
     public Dialogue setName(String s)
     {
-        this.name = new String(s);
+        this.name = s;
         return this;
     }
     public Dialogue setMessages(ArrayList<Message> m)

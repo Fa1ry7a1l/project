@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             NdefMessage message = (NdefMessage) rawMessages[0]; // only one message transferred
             String msg = new String(message.getRecords()[0].getPayload());
-
+///Проверь RSA---------------------------------------------------------------------------------------------------
             Gson gson = new Gson();
             SendAbleMessage sendAbleMessage = gson.fromJson(msg,SendAbleMessage.class);
-            ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage.getMessage(),3);
+            ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage, 3);
 
         }
 
