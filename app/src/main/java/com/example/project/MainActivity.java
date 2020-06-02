@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //can be a reason of memory leak
     //replace static to a new MainActivity member
     public static ListView dialogueListView;
-    private String[] permissions = new String[]{Manifest.permission.NFC_TRANSACTION_EVENT,Manifest.permission.NFC,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
+    private String[] permissions = new String[]{/*Manifest.permission.NFC_TRANSACTION_EVENT,*/Manifest.permission.NFC, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,16 +148,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialogues.get(0).friendsPublicKey = dialogues.get(0).myPublicKey = RSAHelper.getPublicKey(keyPair);
         dialogues.get(0).myPrivateKey = RSAHelper.getPrivateKey(keyPair);
         */
+        try {
+            KeyPair keyPair = RSAHelper.generateKeyPair();
+            assert keyPair != null;
+            dialogues.add(new Dialogue("localhost", "Mary", new ArrayList<Message>(), RSAHelper.getPrivateKey(keyPair), RSAHelper.getPublicKey(keyPair), RSAHelper.getPublicKey(keyPair)));
 
-        KeyPair keyPair = RSAHelper.generateKeyPair();
-        dialogues.add(new Dialogue("localhost", "Mary", new ArrayList<Message>(), RSAHelper.getPrivateKey(keyPair), RSAHelper.getPublicKey(keyPair), RSAHelper.getPublicKey(keyPair)));
+            dialogues.get(0).getMessages().add(new Message(RSAHelper.encrypt("What r u doing?", dialogues.get(0).friendsPublicKey)));
+            dialogues.get(0).getMessages().add(new Message(RSAHelper.decrypt(RSAHelper.encrypt("What r u doing?", dialogues.get(0).friendsPublicKey), dialogues.get(0).myPrivateKey)));
 
-        dialogues.get(0).getMessages().add(new Message(RSAHelper.encrypt("What r u doing?", dialogues.get(0).friendsPublicKey)));
-        dialogues.get(0).getMessages().add(new Message(RSAHelper.decrypt(RSAHelper.encrypt("What r u doing?", dialogues.get(0).friendsPublicKey), dialogues.get(0).myPrivateKey)));
-
-        dialogues.add(new Dialogue().setName("John").setIp(Utils.getIPAddress(true)).setMessages(new ArrayList<Message>()));
-        dialogues.get(1).getMessages().add(new Message("Hi, Im John and Im using ur address: ur ip in local network"));
-
+            keyPair = RSAHelper.generateKeyPair();
+            assert keyPair != null;
+            dialogues.add(new Dialogue(Utils.getIPAddress(true), "John", new ArrayList<Message>(), RSAHelper.getPrivateKey(keyPair), RSAHelper.getPublicKey(keyPair), RSAHelper.getPublicKey(keyPair)));
+            //dialogues.add(new Dialogue().setName("John").setIp(Utils.getIPAddress(true)).setMessages(new ArrayList<Message>()));
+            dialogues.get(1).getMessages().add(new Message("Hi, Im John and Im using ur address: ur ip in local network: " + dialogues.get(1).getIp()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return dialogues;
     }
@@ -177,29 +183,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    void save()
-    {
+    void save() {
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        SaveLoader saveLoader = new SaveLoader(MainActivity.dialogues,InvitesHead.invitesHead);
-        editor.putString(MainActivity.SAVE_TAG,saveLoader.toString());
+        sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SaveLoader saveLoader = new SaveLoader(MainActivity.dialogues, InvitesHead.invitesHead);
+        editor.putString(MainActivity.SAVE_TAG, saveLoader.toString());
         editor.apply();
-        Log.d(MainActivity.SAVE_TAG,"Everything saved");
+        Log.d(MainActivity.SAVE_TAG, "Everything saved");
     }
 
-    SaveLoader load()
-    {
-        SharedPreferences sharedPreferences= getSharedPreferences(MainActivity.SAVE_TAG,MODE_PRIVATE);
-        String loadedText = sharedPreferences.getString(MainActivity.SAVE_TAG,"");
+    SaveLoader load() {
+        SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SAVE_TAG, MODE_PRIVATE);
+        String loadedText = sharedPreferences.getString(MainActivity.SAVE_TAG, "");
 
-        Log.d(TAG,"Everything loaded");
-        if(loadedText.length()<5)
-        {
-            return new SaveLoader();
+        Log.d(TAG, "Everything loaded");
+        assert loadedText != null;
+        if (loadedText.length() > 5) {
+            return SaveLoader.fromString(loadedText);
         }
-        return SaveLoader.fromString(loadedText);
 
+        return new SaveLoader();
     }
 
 }
