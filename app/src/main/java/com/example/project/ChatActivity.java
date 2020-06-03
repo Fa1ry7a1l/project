@@ -95,7 +95,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     Message msg = new Message(myMessageField.getText().toString());
                     msg.setMine(true);
                     message = Message.copy(msg);
-                    message.setMessage(RSAHelper.encrypt(message.getMessage(), MainActivity.dialogue.getFriendsPublicKey()));
+                    if (MainActivity.dialogue.getFriendsPublicKey() != null)
+                        message.setMessage(RSAHelper.encrypt(message.getMessage(), MainActivity.dialogue.getFriendsPublicKey()));
 
                     messages.add(msg);
 

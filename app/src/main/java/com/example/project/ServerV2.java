@@ -132,7 +132,8 @@ class ServerV2 implements Runnable {
                                 for (int i = 0; i < MainActivity.dialogues.size(); i++) {
                                     if (MainActivity.dialogues.get(i).equals(msg)) {
                                         Message message = msg.getMessage();
-                                        message.setMessage(RSAHelper.decrypt(message.getMessage(), MainActivity.dialogues.get(i).getMyPrivateKey()));
+                                        if (MainActivity.dialogues.get(i).getFriendsPublicKey() != null)
+                                            message.setMessage(RSAHelper.decrypt(message.getMessage(), MainActivity.dialogues.get(i).getMyPrivateKey()));
                                         MainActivity.dialogues.get(i).getMessages().add(message);
                                     }
                                 }

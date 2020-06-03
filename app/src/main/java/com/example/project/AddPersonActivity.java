@@ -98,7 +98,7 @@ public class AddPersonActivity extends AppCompatActivity implements View.OnClick
 
                 Gson gson = new Gson();
                 SendAbleMessage sendAbleMessage = new SendAbleMessage().setMessage(new Message(gson.toJson(newPerson)).setStatus(
-                        3*(int)Math.pow(10,Integer.toString(newPerson.num).length())
+                        4 * (int) Math.pow(10, Integer.toString(newPerson.num).length())
                                 +newPerson.num)).setIpFor(Utils.getIPAddress(true)).setIpFrom("");
                 String message = gson.toJson(sendAbleMessage);
 
