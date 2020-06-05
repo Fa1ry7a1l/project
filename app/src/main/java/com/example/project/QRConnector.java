@@ -77,10 +77,23 @@ public class QRConnector extends AppCompatActivity implements Runnable {
                 Log.d(TAG, "thisCode.rawValue is " + thisCode.rawValue);
 
                 Gson gson = new Gson();
-                SendAbleMessage sendAbleMessage = gson.fromJson(thisCode.rawValue, SendAbleMessage.class);
-                if((int)((Integer.toString(sendAbleMessage.getMessage().getStatus())).charAt(0))-(int)('0') ==3)
-                {
+                final SendAbleMessage sendAbleMessage = gson.fromJson(thisCode.rawValue, SendAbleMessage.class);
+                final NewPerson newPerson = gson.fromJson(sendAbleMessage.getMessage().getMessage(), NewPerson.class);
+
+                if ((int) ((Integer.toString(sendAbleMessage.getMessage().getStatus())).charAt(0)) - (int) ('0') == 4) {
                     ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage, 3);
+                   /* MainActivity.dialogueListView.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            MainActivity.dialogues.add(new Dialogue(sendAbleMessage.getIpFrom(), newPerson.getFriendName(), new ArrayList<Message>()));
+
+                            Log.d(TAG, "ADDED new user");
+                            MainActivity.updateAdapter();
+                            //ChatActivity.updateAdapter();
+
+                        }
+                    });*/
                 }
                 else {
                     ClientStarter.execute(sendAbleMessage.getIpFor(), sendAbleMessage.getMessage());

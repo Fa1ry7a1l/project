@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">project</string>
+    <string name="app_name">KOT messenger</string>
 
     <string name="input_in_chat">Write a message</string>
     <string name="send_button_description">Send button</string>

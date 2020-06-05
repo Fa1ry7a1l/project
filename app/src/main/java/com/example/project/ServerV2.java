@@ -122,6 +122,34 @@ class ServerV2 implements Runnable {
                             e.printStackTrace();
                         }
                         break;
+                    case 4:
+                        num = msg.getMessage().getStatus() - (int) (3 * Math.pow(10, (Integer.toString(msg.getMessage().getStatus())).length() - 1));
+                        Log.d(TAG, "Looking for New User " + num);
+                        Log.d(TAG, "User found.");
+
+                        NewPerson newPerson1 = gson.fromJson(msg.getMessage().getMessage(), NewPerson.class);
+                        NewPerson returnNewPerson = newPerson1;
+                        final NewPerson newPerson = returnNewPerson;
+                        MainActivity.dialogueListView.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                MainActivity.dialogues.add(new Dialogue(msg.getIpFrom(), newPerson.getFriendName(), new ArrayList<Message>()));
+
+                                Log.d(TAG, "ADDED new user");
+                                MainActivity.updateAdapter();
+                                //ChatActivity.updateAdapter();
+
+                            }
+                        });
+
+                        Log.d(TAG, newPerson.getFriendName());
+                        Log.d(TAG, "ReturnNewPerson is: " + gson.toJson(returnNewPerson));
+                        out.writeUTF(gson.toJson(returnNewPerson));
+                        Log.d(TAG, "returnNewPerson writed");
+                        out.flush();
+
+                        break;
                     default:
 
                         msg.getMessage().setMine(false);

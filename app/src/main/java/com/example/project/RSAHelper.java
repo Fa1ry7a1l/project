@@ -9,6 +9,8 @@ import java.security.spec.X509EncodedKeySpec;
 
 public class RSAHelper {
     //creates Key pair
+    private static byte[] check = {};
+
     public static KeyPair generateKeyPair() {
         try {
             return RSA.generateKeyPair();
@@ -29,6 +31,9 @@ public class RSAHelper {
 
     //makes from saved format keys ones and codes or decodes messages
     public static String encrypt(String message, byte[] publicKey) {
+        if (publicKey == check) {
+            return message;
+        }
         try {
             X509EncodedKeySpec ks = new X509EncodedKeySpec(publicKey);
             KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -42,6 +47,10 @@ public class RSAHelper {
     }
 
     public static String decrypt(String message, byte[] privateKey) {
+        if (privateKey == check) {
+            return message;
+        }
+
         try {
             PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(privateKey);
             KeyFactory kf = KeyFactory.getInstance("RSA");
